@@ -4,7 +4,7 @@ version: '3.3'
 services:
   node:
     container_name: ui
-    image: taller3/nodered
+    image: servidor_cuarto_maduracion/nodered
     build:
       context: .
       dockerfile: Dockerfile.node
@@ -14,7 +14,7 @@ services:
       - "1880:1880"
   analitica:
     container_name: analitica
-    image: taller3/analitica
+    image: servidor_cuarto_maduracion/analitica
     restart: always
     build:
       context: .
@@ -25,7 +25,7 @@ services:
       - rabbit
   rabbit:
     container_name: rabbit
-    image: taller3/rabbit
+    image: servidor_cuarto_maduracion/rabbit
     restart: always
     build:
       context: .

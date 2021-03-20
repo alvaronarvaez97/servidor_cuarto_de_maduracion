@@ -7,8 +7,8 @@ import time
 import pika
 
 class analitica():
-    ventana = 10
-    pronostico = 3
+    ventana = 15
+    pronostico = 1
     file_name = "data_base.csv"
     servidor = "rabbit"
 
@@ -22,15 +22,7 @@ class analitica():
         else:
             self.df = pd.read_csv (self.file_name)
             
-            
-    # def publicar_antiguos(self):
-    #     ant_temp= self.df[self.df["sensor"] == "temperatura"]
-    #     ant_hum= self.df[self.df["sensor"] == "humedad"]
-    #     ant_pre= self.df[self.df["sensor"] == "presion"]
-    #     for index, row in self.df.iterrows():
-    #         print(row)
-        
-        
+             
         
     def update_data(self, msj):
         msj_vetor = msj.split(",")
@@ -41,11 +33,10 @@ class analitica():
         new_data = {"fecha": date_time, "sensor": msj_vetor[2], "valor": float(msj_vetor[3])}
         self.df = self.df.append(new_data, ignore_index=True)
 
-        # self.publicar_antiguos(self)
         self.publicar("temperatura",msj_vetor[1])
         self.publicar("humedad",msj_vetor[3])
         self.analitica_descriptiva()
-        self.analitica_predictiva()
+       # self.analitica_predictiva()
         self.guardar()
 
     def print_data(self):
@@ -60,7 +51,7 @@ class analitica():
         df_filtrado = df_filtrado["valor"]
         df_filtrado = df_filtrado.tail(self.ventana)
         if df_filtrado.max(skipna = True) > 34:
-            self.publicar("alerta/max-{}".format(sensor),"alerta detectada")
+        self.publicar("alerta/max-{}".format(sensor),"alerta detectada")
         self.publicar("max-{}".format(sensor), str(df_filtrado.max(skipna = True)))
         self.publicar("min-{}".format(sensor), str(df_filtrado.min(skipna = True)))
         self.publicar("mean-{}".format(sensor), str(df_filtrado.mean(skipna = True)))

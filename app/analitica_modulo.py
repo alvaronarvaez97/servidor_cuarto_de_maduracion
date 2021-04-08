@@ -35,8 +35,18 @@ class analitica():
 
         self.publicar("temperatura",msj_vetor[1])
         self.publicar("humedad",msj_vetor[3])
+
+        if msj_vetor[1] > 33:
+            self.publicar("alerta-temperatura","La temperatura esta por enciama del valor nominal")
+
+        if msj_vetor[1] < 30:
+            self.publicar("alerta-temperatura","La temperatura esta por debajo del valor nominal")
+        
+        if msj_vetor[3] > 70:
+            self.publicar("alerta-humedad","La humedad esta por enciama del valor nominal")
+
         self.analitica_descriptiva()
-       # self.analitica_predictiva()
+        self.analitica_predictiva()
         self.guardar()
 
     def print_data(self):
@@ -50,8 +60,8 @@ class analitica():
         df_filtrado = self.df[self.df["sensor"] == sensor]
         df_filtrado = df_filtrado["valor"]
         df_filtrado = df_filtrado.tail(self.ventana)
-        if df_filtrado.max(skipna = True) > 34:
-            self.publicar("alerta/max-{}".format(sensor),"alerta detectada")
+        #if df_filtrado.max(skipna = True) > 34:
+         #   self.publicar("alerta/max-{}".format(sensor),"alerta detectada")
         self.publicar("max-{}".format(sensor), str(df_filtrado.max(skipna = True)))
         self.publicar("min-{}".format(sensor), str(df_filtrado.min(skipna = True)))
         self.publicar("mean-{}".format(sensor), str(df_filtrado.mean(skipna = True)))

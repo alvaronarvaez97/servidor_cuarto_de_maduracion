@@ -45,6 +45,9 @@ class analitica():
         if msj_vetor[3] > str(70):
             self.publicar("alerta-humedad","La humedad esta por enciama del valor nominal")
 
+        if msj_vetor[3] > str(60):
+            self.publicar("alerta-humedad","La humedad esta por debajo del valor nominal")
+
         self.analitica_descriptiva()
         self.analitica_predictiva()
         self.guardar()
@@ -93,8 +96,8 @@ class analitica():
         Y_pred = linear_regressor.predict(nuevos_tiempos.reshape(-1, 1))
         for tiempo, prediccion in zip(nuevos_tiempos, Y_pred):
             time_format = datetime.utcfromtimestamp(tiempo)
-            date_time = time_format.strftime('%d.%m.%Y %H:%M:%S')
-            self.publicar("prediccion-{}".format(sensor), "{topic:{},payload:{},timestamp:{}}".format(sensor,prediccion[0],date_time))
+            date_time = time_format.replace(tzinfo=datetime.timezone(datetime.timedelta(hours=-5))).isoformat()
+            self.publicar("prediccion-{}".format(sensor),"{topic:{},payload:{},timestamp:{}}".format(sensor,prediccion[0],date_time))
     @staticmethod
     def publicar(cola, mensaje):
         connexion = pika.BlockingConnection(pika.ConnectionParameters(host='rabbit'))
